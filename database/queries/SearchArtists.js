@@ -11,4 +11,19 @@ const Artist = require('../models/artist');
  */
 module.exports = (criteria, sortProperty, offset = 0, limit = 20) => {
   // Write a query that will follow sort, offset, limit options only
+
+  const query = Artist.find({})
+    .sort({[sortProperty]: 1})
+    .skip(offset)
+    .limit(limit)
+
+  return Promise.all([query, Artist.count()])
+    .then((results) => {
+      return {
+        all: results[0],
+        count: results[1],
+        offset: offset,
+        limit: limit
+      }
+    })
 };
